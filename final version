@@ -1,0 +1,135 @@
+'''The following is a rock paper scissors game against the computer'''
+
+#Import the following libraries necessary for our code:
+import random
+import tkinter as tk
+import os.path
+from PIL import Image, ImageTk
+import time
+
+#Set up the window itself: 
+window = tk.Tk()
+window.geometry("400x300")
+window.configure(bg="lightblue")
+window.title("Rock Paper Scissors Game")
+
+""" Creates the score variable and choice variable. 
+The score variable  keeps track of the number of wins, and the choice is a string that is either rock, paper, or scissor"""
+USER_SCORE = 0
+COMP_SCORE = 0
+USER_CHOICE = ""
+COMP_CHOICE = ""
+
+
+#Uploads the images necessary for the buttons
+photorock = ImageTk.PhotoImage(Image.open("rock.png"))
+photopaper = ImageTk.PhotoImage(Image.open("paper.png"))
+photoscissors = ImageTk.PhotoImage(Image.open("scissors.png"))
+photoscore = ImageTk.PhotoImage(Image.open("score.png"))
+photostar = ImageTk.PhotoImage(Image.open("star.png"))
+redrock = ImageTk.PhotoImage(Image.open("redrock.png"))
+redpaper = ImageTk.PhotoImage(Image.open("redpaper.png"))
+redscissors = ImageTk.PhotoImage(Image.open("redscissors.png"))
+
+#This function converts the user choice, a string, into a number which is used to evaluate the winner of each round
+def choice_to_number(choice):
+    rps = {'rock':0, 'paper':1, 'scissor':2}
+    return rps[choice]
+    
+#Using the random library, the computer randomly chooses rock, paper, or scissors from the list 
+def random_computer_choice():
+    return random.choice(['rock', 'paper', 'scissor'])
+
+'''The result function below evaluates the winner of each round using the number
+from the choice_to_number function'''
+def result(human_choice, comp_choice):
+    global USER_SCORE
+    global COMP_SCORE
+    user=choice_to_number(human_choice)
+    comp=choice_to_number(comp_choice)
+
+#The boolean statements below determine which image will appear to represent the computer's choice 
+
+    if comp == 0:
+        button11.grid_forget()
+        button12.grid_forget()
+        button10.grid(column=2, row=4)
+       
+    if comp == 1:
+        button10.grid_forget()
+        button12.grid_forget()
+        button11.grid(column=2, row=4)
+  
+    if comp == 2:
+        button10.grid_forget()
+        button11.grid_forget()
+        button12.grid(column=2, row=4)
+  
+    if(user==comp):
+        print("Tie")
+    elif((user-comp)%3==1):
+        print("You win")
+        USER_SCORE += 1
+    else:
+        print("You lose")
+        COMP_SCORE += 1
+    
+#Creates the scoreboard
+    text_area = tk.Text(master=window, height=12, width=60,bg='#0099F0')
+    text_area.grid(column=2, row=3)
+    answer = "Your Choice: {uc}   Computer's Choice : {cc} \n      Your Score : {u}   Computer Score : {c}".format(uc=USER_CHOICE, cc=COMP_CHOICE, u=USER_SCORE, c=COMP_SCORE)
+    
+#Decides the winner    
+    if COMP_SCORE > 9:
+        text_area = tk.Text(master=window, height=12, width=60, bg="#FF0000")
+        text_area.grid(column=2, row=3)
+        answer = "You Lost! Game OVER!"
+    elif USER_SCORE > 9:
+        text_area = tk.Text(master=window, height=12, width=60, bg="#00FF00")
+        text_area.grid(column=2, row=3)
+        button5 = tk.Button(text= "      Star      ", image=photostar, bg='lightblue')
+        button5.grid(column=1, row=2)
+        button6 = tk.Button(text= "      Star      ", image=photostar, bg='lightblue')
+        button6.grid(column=3, row=2)
+        answer = "You Win! NICE Job!"
+    text_area.insert(tk.END, answer)
+
+'''The three functions below are called when the user makes their choice by clicking on a button'''
+def rock():
+    global USER_CHOICE
+    global COMP_CHOICE
+    USER_CHOICE = 'rock'
+    COMP_CHOICE = random_computer_choice()
+    result(USER_CHOICE, COMP_CHOICE)
+def paper():
+    global USER_CHOICE
+    global COMP_CHOICE
+    USER_CHOICE = 'paper'
+    COMP_CHOICE = random_computer_choice()
+    result(USER_CHOICE, COMP_CHOICE)
+def scissor():
+    global USER_CHOICE
+    global COMP_CHOICE
+    USER_CHOICE = 'scissor'
+    COMP_CHOICE = random_computer_choice()
+    result(USER_CHOICE, COMP_CHOICE)
+
+#User buttons
+button1 = tk.Button(text= "      Rock      ", image=photorock, bg='turquoise', command=rock)
+button1.grid(column=1, row=1)
+button2 = tk.Button(text= "      Paper      ", image=photopaper, bg='yellow', command=paper)
+button2.grid(column=2, row=1)
+button3 = tk.Button(text= "      Scissor      ", image=photoscissors, bg='pink', command=scissor)
+button3.grid(column=3, row=1)
+
+#Red "buttons" for computer choice
+button10 = tk.Button(text= "      RedRock      ", image=redrock, bg='turquoise')
+button11 = tk.Button(text= "      RedPaper      ", image=redpaper, bg='yellow')
+button12 = tk.Button(text= "      RedScissor      ", image=redscissors, bg='pink')
+
+#Scoreboard
+button4 = tk.Button(text= "      Scoreboard      ", image=photoscore, bg='lightblue')
+button4.grid(column=2, row=2)
+
+#Runs the program
+window.mainloop()
